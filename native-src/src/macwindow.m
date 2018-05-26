@@ -7,6 +7,9 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Metal/MTLDevice.h>
+#import <MetalKit/MTKView.h>
+
 #import "interopTypes.h"
 #import "WindowEventListener.h"
 
@@ -78,6 +81,23 @@ extern int * CreateWindow(int * appPointer, struct Size size,
     int * windowPointer = (int *)window;
     NSLog(@"[libmacwindow] created window: %p\n", windowPointer);
     return windowPointer;
+}
+
+extern int * CreateMetalView(int * windowPointer)
+{
+    NSWindow * window = (NSWindow *)windowPointer;
+    
+    //Create a device handle
+    id<MTLDevice> metalDevice = MTLCreateSystemDefaultDevice();
+    
+    //Create view that is attached to the window
+    CGRect frameBounds = CGRectMake(0, 0, 1, 1);
+    MTKView * metalView = [[MTKView alloc] initWithFrame:frameBounds device:metalDevice];
+    [window setContentView:metalView];
+    
+    int * viewPointer = (int *)metalView;
+    NSLog(@"[libmacwindow] created metal-view: %p\n", viewPointer);
+    return viewPointer;
 }
 
 extern void SetTitle(int * windowPointer, char * titleUtf8)
