@@ -12,11 +12,14 @@ namespace MacOS
     {
 		#region Native bindings
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate Size ResizeCallback(Size size);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void CloseRequestedDelegate();
 
 		[DllImport("libmacwindow")] private static extern IntPtr CreateWindow(	IntPtr appPointer, 
-																				float width, 
-																				float height, 
+																				Size size, 
+																				[MarshalAs(UnmanagedType.FunctionPtr)]ResizeCallback resizeCallback,
 																				[MarshalAs(UnmanagedType.FunctionPtr)]CloseRequestedDelegate closeCallback);
 
 		[DllImport("libmacwindow", CharSet = CharSet.Ansi)] private static extern void SetTitle(IntPtr windowPointer, string title);
@@ -40,17 +43,21 @@ namespace MacOS
 				}
 			}
 		}
+		public Size Size { get; private set; }
+		public Size MinSize { get; set; } = new Size(0f, 0f);
+		public Size MaxSize { get; set; } = new Size(float.MaxValue, float.MaxValue);
 
 		private bool disposed;
 		private string title;
 
-		public NativeWindow(NativeApp app, float width, float height)
+		public NativeWindow(NativeApp app, Size size)
 		{
+			Size = size;
 			NativeWindowPointer = CreateWindow
 			(
 				app.NativeAppPointer,
-				width,
-				height,
+				size,
+				OnResize,
 				OnCloseRequested
 			);
 		}
@@ -62,6 +69,16 @@ namespace MacOS
 				DisposeWindow(NativeWindowPointer);
 				disposed = true;
 			}
+		}
+
+		private Size OnResize(Size size)
+		{
+			Size = new Size
+			(
+				size.Width.Clamp(MinSize.Width, MaxSize.Width),
+				size.Height.Clamp(MinSize.Height, MaxSize.Height)
+			);
+			return Size;
 		}
 
 		private void OnCloseRequested() => CloseRequested?.Invoke();

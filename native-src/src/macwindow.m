@@ -7,6 +7,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "interopTypes.h"
 #import "WindowEventListener.h"
 
 extern int * SetupApp()
@@ -45,14 +46,15 @@ extern void DisposeApp(int * appPointer)
     NSLog(@"[libmacwindow] disposed app: %p\n", appPointer);
 }
 
-extern int * CreateWindow(int * appPointer, float width, float height,
+extern int * CreateWindow(int * appPointer, struct Size size,
+    void * resizeCallback,
     void * closeRequestedCallback)
 {
     NSApplication * app = (NSApplication *) appPointer;
     
     //Create a centered rect
     NSRect screenRect = [[NSScreen mainScreen] frame];
-    NSRect windowRect = NSMakeRect(NSMidX(screenRect) - width * .5, NSMidY(screenRect) - height * .5, width, height);
+    NSRect windowRect = NSMakeRect(NSMidX(screenRect) - size.width * .5, NSMidY(screenRect) - size.height * .5, size.width, size.height);
     
     //Setup style for a titled, closable and resizable
     NSUInteger windowStyle = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable;
@@ -61,7 +63,9 @@ extern int * CreateWindow(int * appPointer, float width, float height,
     NSWindow * window = [[NSWindow alloc] initWithContentRect:windowRect styleMask:windowStyle backing:NSBackingStoreBuffered defer:NO];
     
     //Setup a custom eventlistener for receiving info about what happens to the window
-    WindowEventListener * eventListener = [[WindowEventListener alloc] initWithCallbacks: closeRequestedCallback];
+    WindowEventListener * eventListener = [[WindowEventListener alloc] init];
+    eventListener->resizeCallback = resizeCallback;
+    eventListener->closeRequestedCallback = closeRequestedCallback;
     window.delegate = eventListener;
     
     //Attach the window to the app and move it infront

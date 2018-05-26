@@ -11,7 +11,7 @@ namespace Example
 			NativeApp app = new NativeApp();
 
 			bool running = true;
-			NativeWindow window = new NativeWindow(app, 1280, 720);
+			NativeWindow window = new NativeWindow(app,  new Size(1280f, 720f));
 			window.CloseRequested += () => running = false;
 			while(running)
 			{

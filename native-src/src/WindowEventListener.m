@@ -2,21 +2,21 @@
 #import "WindowEventListener.h"
 
 @implementation WindowEventListener
-{
-    void (* closeRequestedCallback)(void);
-}
 
-- (id) initWithCallbacks: (void *) closeRequestedCallback
+- (NSSize) windowWillResize: (NSWindow *)sender toSize: (NSSize)frameSize
 {
-    self = [super init];
-    if (self)
+    if(resizeCallback != nil)
     {
-        self->closeRequestedCallback = closeRequestedCallback;
+        struct Size size;
+        size.width = frameSize.width;
+        size.height = frameSize.height;
+        size = resizeCallback(size);
+        return NSMakeSize(size.width, size.height);
     }
-    return self;
+    return frameSize;
 }
 
-- (BOOL) windowShouldClose: (NSWindow *) sender
+- (BOOL) windowShouldClose: (NSWindow *)sender
 {
     if(closeRequestedCallback != nil)
         closeRequestedCallback();

@@ -30,6 +30,7 @@
 		03FB27CD20B9869D00933672 /* libmacwindow.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmacwindow.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		03FB27D420B99DAD00933672 /* WindowEventListener.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WindowEventListener.m; sourceTree = "<group>"; };
 		03FB27D620B99DC000933672 /* WindowEventListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WindowEventListener.h; sourceTree = "<group>"; };
+		03FB27EC20B9E2ED00933672 /* interopTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = interopTypes.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +58,7 @@
 				0393026420B9844000E11B97 /* macwindow.m */,
 				03FB27D420B99DAD00933672 /* WindowEventListener.m */,
 				03FB27D620B99DC000933672 /* WindowEventListener.h */,
+				03FB27EC20B9E2ED00933672 /* interopTypes.h */,
 			);
 			path = src;
 			sourceTree = "<group>";

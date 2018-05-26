@@ -1,9 +1,14 @@
 #import <Cocoa/Cocoa.h>
+#import "interopTypes.h"
 
 @interface WindowEventListener : NSObject <NSWindowDelegate>
+{
+    @public struct Size (* resizeCallback)(struct Size);
+    @public void (* closeRequestedCallback)(void);
+}
 
-- (id) initWithCallbacks: (void *) closeRequestedCallback;
+- (NSSize) windowWillResize: (NSWindow *)sender toSize: (NSSize)frameSize;
 
-- (BOOL) windowShouldClose: (NSWindow *) sender;
+- (BOOL) windowShouldClose: (NSWindow *)sender;
 
 @end
