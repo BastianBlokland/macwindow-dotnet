@@ -1,0 +1,8 @@
+/dotnet-src/bin/
+/dotnet-src/obj/
+
+/native-src/index/
+/native-src/output/
+
+/example/bin/
+/example/obj/
