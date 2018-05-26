@@ -3,6 +3,12 @@
 
 @implementation WindowEventListener
 
+- (void) windowWillStartLiveResize: (NSNotification *)notification
+{
+    if(beginResizeCallback != nil)
+        beginResizeCallback();
+}
+
 - (NSSize) windowWillResize: (NSWindow *)sender toSize: (NSSize)frameSize
 {
     if(resizeCallback != nil)
@@ -14,6 +20,12 @@
         return NSMakeSize(size.width, size.height);
     }
     return frameSize;
+}
+
+- (void) windowDidEndLiveResize: (NSNotification *)notification
+{
+    if(endResizeCallback != nil)
+        endResizeCallback();
 }
 
 - (BOOL) windowShouldClose: (NSWindow *)sender

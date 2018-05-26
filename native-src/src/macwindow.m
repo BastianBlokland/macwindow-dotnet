@@ -47,7 +47,9 @@ extern void DisposeApp(int * appPointer)
 }
 
 extern int * CreateWindow(int * appPointer, struct Size size,
+    void * beginResizeCallback,
     void * resizeCallback,
+    void * endResizeCallback,
     void * closeRequestedCallback)
 {
     NSApplication * app = (NSApplication *) appPointer;
@@ -64,7 +66,9 @@ extern int * CreateWindow(int * appPointer, struct Size size,
     
     //Setup a custom eventlistener for receiving info about what happens to the window
     WindowEventListener * eventListener = [[WindowEventListener alloc] init];
+    eventListener->beginResizeCallback = beginResizeCallback;
     eventListener->resizeCallback = resizeCallback;
+    eventListener->endResizeCallback = endResizeCallback;
     eventListener->closeRequestedCallback = closeRequestedCallback;
     window.delegate = eventListener;
     

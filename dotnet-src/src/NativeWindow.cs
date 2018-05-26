@@ -12,14 +12,22 @@ namespace MacOS
     {
 		#region Native bindings
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void BeginResizeCallback();
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate Size ResizeCallback(Size size);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void EndResizeCallback();
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void CloseRequestedDelegate();
 
 		[DllImport("libmacwindow")] private static extern IntPtr CreateWindow(	IntPtr appPointer, 
 																				Size size, 
+																				[MarshalAs(UnmanagedType.FunctionPtr)]BeginResizeCallback beginResizeCallback,
 																				[MarshalAs(UnmanagedType.FunctionPtr)]ResizeCallback resizeCallback,
+																				[MarshalAs(UnmanagedType.FunctionPtr)]BeginResizeCallback endResizeCallback,
 																				[MarshalAs(UnmanagedType.FunctionPtr)]CloseRequestedDelegate closeCallback);
 
 		[DllImport("libmacwindow", CharSet = CharSet.Ansi)] private static extern void SetTitle(IntPtr windowPointer, string title);
@@ -28,6 +36,9 @@ namespace MacOS
 		#endregion
 
 		public event Action CloseRequested;
+		public event Action BeginResizing;
+		public event Action<Size> Resized;
+		public event Action EndResizing;
 
 		public readonly IntPtr NativeWindowPointer;
 		
@@ -43,6 +54,7 @@ namespace MacOS
 				}
 			}
 		}
+		public bool IsResizing { get; private set; }
 		public Size Size { get; private set; }
 		public Size MinSize { get; set; } = new Size(0f, 0f);
 		public Size MaxSize { get; set; } = new Size(float.MaxValue, float.MaxValue);
@@ -57,7 +69,9 @@ namespace MacOS
 			(
 				app.NativeAppPointer,
 				size,
+				OnBeginResize,
 				OnResize,
+				OnEndResize,
 				OnCloseRequested
 			);
 		}
@@ -71,6 +85,12 @@ namespace MacOS
 			}
 		}
 
+		private void OnBeginResize()
+		{
+			IsResizing = true;
+			BeginResizing?.Invoke();
+		}
+
 		private Size OnResize(Size size)
 		{
 			Size = new Size
@@ -78,7 +98,14 @@ namespace MacOS
 				size.Width.Clamp(MinSize.Width, MaxSize.Width),
 				size.Height.Clamp(MinSize.Height, MaxSize.Height)
 			);
+			Resized?.Invoke(Size);
 			return Size;
+		}
+
+		private void OnEndResize()
+		{
+			IsResizing = false;
+			EndResizing?.Invoke();
 		}
 
 		private void OnCloseRequested() => CloseRequested?.Invoke();

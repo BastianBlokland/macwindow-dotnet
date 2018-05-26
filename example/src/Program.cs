@@ -13,8 +13,13 @@ namespace Example
 			bool running = true;
 			NativeWindow window = new NativeWindow(app,  new Size(1280f, 720f));
 			window.CloseRequested += () => running = false;
+
+			int counter = 0;
 			while(running)
 			{
+				if(!window.IsResizing)
+					window.Title = (counter++).ToString();
+
 				app.ProcessEvents();
 				Thread.Sleep(30); //Lets not use all the cpu :)
 			}
