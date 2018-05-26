@@ -6,7 +6,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <ProjectReference Include="../dotnet-src/dotnet-src.csproj" />
+    <ProjectReference Include="../dotnet-src/NativeMacOS.csproj" />
     <None Include="../lib/*" CopyToOutputDirectory="PreserveNewest"/>
   </ItemGroup>
 
