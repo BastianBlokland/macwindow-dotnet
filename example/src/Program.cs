@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using MacOS;
+using NativeMacOS;
 
 namespace Example
 {

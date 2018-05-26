@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace MacOS
+namespace NativeMacOS
 {
 	/// <summary>
 	/// Native bindings around a MTKView, this a handle to the metal renderer that renders into a window. 

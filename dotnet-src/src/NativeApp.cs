@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace MacOS
+namespace NativeMacOS
 {
 	/// <summary>
 	/// Native bindings around a NSApplication, this is root of the application and handles processing all the input events

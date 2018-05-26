@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace MacOS
+namespace NativeMacOS
 {
 	/// <summary>
 	/// Wrapper around the NSWindow object, can be used to set properties of the window and get callbacks when the user interacts with

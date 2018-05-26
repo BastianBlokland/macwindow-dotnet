@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace MacOS
+namespace NativeMacOS
 {
     [StructLayout(LayoutKind.Sequential)]
 	public struct Size

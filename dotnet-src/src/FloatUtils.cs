@@ -1,4 +1,4 @@
-namespace MacOS
+namespace NativeMacOS
 {
     public static class FloatUtils
     {
