@@ -93,6 +93,8 @@ extern int * CreateMetalView(int * windowPointer)
     //Create view that is attached to the window
     CGRect frameBounds = CGRectMake(0, 0, 1, 1);
     MTKView * metalView = [[MTKView alloc] initWithFrame:frameBounds device:metalDevice];
+    metalView.paused = YES;
+    metalView.enableSetNeedsDisplay = NO;
     [window setContentView:metalView];
     
     int * viewPointer = (int *)metalView;
