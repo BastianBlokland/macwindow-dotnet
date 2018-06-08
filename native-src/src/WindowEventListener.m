@@ -31,12 +31,33 @@
 {
     if(minimizedCallback != nil)
         minimizedCallback();
+    
+    if(movedCallback != nil)
+    {
+        //Bit of windows convention here to set the position of a minimised window to -32000
+        struct Int2 pos;
+        pos.x = -32000;
+        pos.y = -32000;
+        movedCallback(pos);
+    }
+    if(resizedCallback != nil)
+    {
+        struct Int2 size;
+        size.x = 0;
+        size.y = 0;
+        resizedCallback(size);
+    }
 }
 
 - (void) windowDidDeminiaturize: (NSNotification *)notification
 {
     if(deminizedCallback != nil)
         deminizedCallback();
+    
+    //Also notify about a move and resize
+    NSWindow * window = (NSWindow *)notification.object;
+    [self moved:(window)];
+    [self resized:(window)];
 }
 
 - (void) windowDidEnterFullScreen: (NSNotification *)notification
