@@ -1,10 +1,10 @@
 #ifndef interopTypes_h
 #define interopTypes_h
 
-struct Size
+struct Int2
 {
-    float width;
-    float height;
+    int32_t x;
+    int32_t y;
 };
 
 #endif

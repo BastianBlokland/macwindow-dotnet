@@ -12,35 +12,56 @@ namespace NativeMacOS
     {
 		#region Native bindings
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void BeginResizeCallback();
+		private delegate void ResizedDelegate(Int2 size);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate Size ResizeCallback(Size size);
+		private delegate void BeginResizeDelegate();
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void EndResizeCallback();
+		private delegate void EndResizeDelegate();
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void MovedDelegate(Int2 size);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void MinimizedDelegate();
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void DeminimizedDelegate();
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void MaximizedDelegate();
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void DemaximizedDelegate();
+		
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void CloseRequestedDelegate();
 
-		[DllImport("libmacwindow")] private static extern IntPtr CreateWindow(	IntPtr appPointer, 
-																				Size size, 
-																				[MarshalAs(UnmanagedType.FunctionPtr)]BeginResizeCallback beginResizeCallback,
-																				[MarshalAs(UnmanagedType.FunctionPtr)]ResizeCallback resizeCallback,
-																				[MarshalAs(UnmanagedType.FunctionPtr)]BeginResizeCallback endResizeCallback,
-																				[MarshalAs(UnmanagedType.FunctionPtr)]CloseRequestedDelegate closeCallback);
+		[DllImport("libmacwindow", CharSet = CharSet.Ansi)] 
+		private static extern IntPtr CreateWindow(	IntPtr appPointer,
+													Int2 size,
+													string title,
+													[MarshalAs(UnmanagedType.FunctionPtr)]ResizedDelegate resizedCallback,
+													[MarshalAs(UnmanagedType.FunctionPtr)]BeginResizeDelegate beginResizeCallback,
+													[MarshalAs(UnmanagedType.FunctionPtr)]EndResizeDelegate endResizeCallback,
+													[MarshalAs(UnmanagedType.FunctionPtr)]MovedDelegate movedCallback,
+													[MarshalAs(UnmanagedType.FunctionPtr)]MinimizedDelegate minimizedCallback,
+													[MarshalAs(UnmanagedType.FunctionPtr)]DeminimizedDelegate deminimizedDelegate,
+													[MarshalAs(UnmanagedType.FunctionPtr)]MaximizedDelegate maximizedCallback,
+													[MarshalAs(UnmanagedType.FunctionPtr)]DemaximizedDelegate demaximizedCallback,
+													[MarshalAs(UnmanagedType.FunctionPtr)]CloseRequestedDelegate closeCallback);
 
-		[DllImport("libmacwindow", CharSet = CharSet.Ansi)] private static extern void SetTitle(IntPtr windowPointer, string title);
+		[DllImport("libmacwindow", CharSet = CharSet.Ansi)] 
+		private static extern void SetTitle(IntPtr windowPointer, string title);
 
-		[DllImport("libmacwindow")] private static extern void DisposeWindow(IntPtr windowPointer);
+		[DllImport("libmacwindow")] 
+		private static extern void DisposeWindow(IntPtr windowPointer);
 		#endregion
 
 		public event Action CloseRequested;
-		public event Action BeginResizing;
-		public event Action<Size> Resized;
-		public event Action EndResizing;
-
-		public readonly IntPtr NativeWindowPointer;
+		public event Action<Int2> Resized;
+		public event Action<Int2> Moved;
 		
 		public string Title
 		{
@@ -54,24 +75,31 @@ namespace NativeMacOS
 				}
 			}
 		}
+		public bool Minimized { get; private set; }
+		public bool Maximized { get; private set; }
 		public bool IsResizing { get; private set; }
-		public Size Size { get; private set; }
-		public Size MinSize { get; set; } = new Size(0f, 0f);
-		public Size MaxSize { get; set; } = new Size(float.MaxValue, float.MaxValue);
+		public IntRect Rect { get; private set; }
+		public readonly IntPtr NativeWindowPointer;
 
 		private bool disposed;
 		private string title;
 
-		public NativeWindow(NativeApp app, Size size)
+		public NativeWindow(NativeApp app, Int2 size, string title)
 		{
-			Size = size;
+			this.title = title;
 			NativeWindowPointer = CreateWindow
 			(
 				app.NativeAppPointer,
 				size,
+				title,
+				OnResized,
 				OnBeginResize,
-				OnResize,
 				OnEndResize,
+				OnMoved,
+				OnMinimized, 
+				OnDeminimized,
+				OnMaximized,
+				OnDemaximized,
 				OnCloseRequested
 			);
 		}
@@ -85,28 +113,29 @@ namespace NativeMacOS
 			}
 		}
 
-		private void OnBeginResize()
+		private void OnResized(Int2 size)
 		{
-			IsResizing = true;
-			BeginResizing?.Invoke();
+			Rect = new IntRect(Rect.Min, Rect.Min + size);
+			Resized?.Invoke(size);
 		}
 
-		private Size OnResize(Size size)
+		private void OnBeginResize() => IsResizing = true;
+
+		private void OnEndResize() => IsResizing = false;
+
+		private void OnMoved(Int2 pos)
 		{
-			Size = new Size
-			(
-				size.Width.Clamp(MinSize.Width, MaxSize.Width),
-				size.Height.Clamp(MinSize.Height, MaxSize.Height)
-			);
-			Resized?.Invoke(Size);
-			return Size;
+			Rect = new IntRect(pos, pos + Rect.Size);
+			Moved?.Invoke(pos);
 		}
 
-		private void OnEndResize()
-		{
-			IsResizing = false;
-			EndResizing?.Invoke();
-		}
+		private void OnMinimized() => Minimized = true;
+		
+		private void OnDeminimized() => Minimized = false;
+
+		private void OnMaximized() => Maximized = true;
+
+		private void OnDemaximized() => Maximized = false;
 
 		private void OnCloseRequested() => CloseRequested?.Invoke();
     }

@@ -11,11 +11,14 @@ namespace NativeMacOS
     public class NativeApp : IDisposable
     {
 		#region Native bindings
-		[DllImport("libmacwindow")] private static extern IntPtr SetupApp();
+		[DllImport("libmacwindow")] 
+		private static extern IntPtr SetupApp();
 
-		[DllImport("libmacwindow")] private static extern void ProcessEvents(IntPtr appPointer);
+		[DllImport("libmacwindow")] 
+		private static extern void ProcessEvents(IntPtr appPointer);
 
-		[DllImport("libmacwindow")] private static extern void DisposeApp(IntPtr appPointer);
+		[DllImport("libmacwindow")] 
+		private static extern void DisposeApp(IntPtr appPointer);
 		#endregion
 
 		public readonly IntPtr NativeAppPointer;

@@ -11,14 +11,15 @@ namespace Example
 			NativeApp app = new NativeApp();
 
 			bool running = true;
-			NativeWindow window = new NativeWindow(app,  new Size(1280f, 720f));
+			NativeWindow window = new NativeWindow(app,  new Int2(1280, 720), "MacWindow");
 			window.CloseRequested += () => running = false;
+			window.Resized += size => Console.WriteLine("Resized: " + size);
+			window.Moved += pos => Console.WriteLine("Moved: " + pos);
 
 			int counter = 0;
 			while(running)
 			{
-				if(!window.IsResizing)
-					window.Title = (counter++).ToString();
+				window.Title = (counter++).ToString();
 
 				app.ProcessEvents();
 				Thread.Sleep(30); //Lets not use all the cpu :)

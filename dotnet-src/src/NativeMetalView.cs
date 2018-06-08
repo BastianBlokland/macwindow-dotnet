@@ -10,7 +10,8 @@ namespace NativeMacOS
     public class NativeMetalView
     {
 		#region Native bindings
-		[DllImport("libmacwindow")] private static extern IntPtr CreateMetalView(IntPtr windowPointer);
+		[DllImport("libmacwindow")] 
+		private static extern IntPtr CreateMetalView(IntPtr windowPointer);
 		#endregion
 
 		public readonly IntPtr NativeMetalViewPointer;
