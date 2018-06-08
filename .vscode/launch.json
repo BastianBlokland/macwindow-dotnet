@@ -4,8 +4,9 @@
    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
    "version": "0.2.0",
    "configurations": [
+
         {
-            "name": ".NET Core Launch (console)",
+            "name": "Example",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
@@ -19,7 +20,7 @@
             "internalConsoleOptions": "openOnSessionStart"
         },
         {
-            "name": ".NET Core Attach",
+            "name": "Attach",
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
