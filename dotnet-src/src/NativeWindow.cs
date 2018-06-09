@@ -40,7 +40,7 @@ namespace NativeMacOS
 
         [DllImport("libmacwindow", CharSet = CharSet.Ansi)] 
         private static extern IntPtr CreateWindow(	IntPtr appPointer,
-                                                    Int2 size,
+                                                    Int2 size, Int2 minSize,
                                                     string title,
                                                     [MarshalAs(UnmanagedType.FunctionPtr)]ResizedDelegate resizedCallback,
                                                     [MarshalAs(UnmanagedType.FunctionPtr)]BeginResizeDelegate beginResizeCallback,
@@ -84,13 +84,14 @@ namespace NativeMacOS
         private bool disposed;
         private string title;
 
-        public NativeWindow(NativeApp app, Int2 size, string title)
+        public NativeWindow(NativeApp app, Int2 size, Int2 minSize, string title)
         {
             this.title = title;
             NativeWindowPointer = CreateWindow
             (
                 app.NativeAppPointer,
                 size,
+                minSize,
                 title,
                 OnResized,
                 OnBeginResize,

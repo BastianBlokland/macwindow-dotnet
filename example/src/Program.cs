@@ -11,7 +11,7 @@ namespace Example
             NativeApp app = new NativeApp();
 
             bool running = true;
-            NativeWindow window = new NativeWindow(app,  new Int2(1280, 720), "MacWindow");
+            NativeWindow window = new NativeWindow(app, size: new Int2(1280, 720), minSize: new Int2(150, 150), title: "MacWindow");
             window.CloseRequested += () => running = false;
             window.Resized += size => Console.WriteLine("Resized: " + size);
             window.Moved += pos => Console.WriteLine("Moved: " + pos);

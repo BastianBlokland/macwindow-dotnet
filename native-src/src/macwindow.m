@@ -54,7 +54,7 @@ extern void DisposeApp(int * appPointer)
     }
 }
 
-extern int * CreateWindow(int * appPointer, struct Int2 size, char * titleUtf8,
+extern int * CreateWindow(int * appPointer, struct Int2 size, struct Int2 minSize, char * titleUtf8,
     void * resizedCallback,
     void * beginResizeCallback, void * endResizeCallback,
     void * movedCallback,
@@ -75,6 +75,9 @@ extern int * CreateWindow(int * appPointer, struct Int2 size, char * titleUtf8,
         //Create the window
         NSWindow * window = [[NSWindow alloc] initWithContentRect:windowRect styleMask:windowStyle backing:NSBackingStoreBuffered defer:NO];
         window.releasedWhenClosed = true; //Auto-release when close
+        
+        //Set minSize
+        window.contentMinSize = NSMakeSize(minSize.x, minSize.y);
         
         //Set the title
         NSString * titleString = [[NSString alloc] initWithUTF8String:titleUtf8];
