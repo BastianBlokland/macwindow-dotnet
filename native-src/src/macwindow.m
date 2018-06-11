@@ -82,6 +82,7 @@ extern int * CreateWindow(int * appPointer, struct Int2 size, struct Int2 minSiz
         //Set the title
         NSString * titleString = [[NSString alloc] initWithUTF8String:titleUtf8];
         [window setTitle:titleString];
+        [window setBackgroundColor:NSColor.blackColor];
         [titleString release];
         
         //Setup a custom eventlistener for receiving info about what happens to the window
