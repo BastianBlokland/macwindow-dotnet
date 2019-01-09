@@ -1,4 +1,4 @@
-# Netstandard2.0 c# bindings around native macOS window management
+# [Retired] Netstandard2.0 c# bindings around native macOS window management
 
 Still very work in progress. Can be used to create windows from a pure netcoreapp, started this project to created a c# vulkan renderer (using one of the available vulkan c# bindings and using moltenVK)
 
